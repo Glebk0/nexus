@@ -21,7 +21,7 @@ void push() {
     def workspace = System.getenv('WORKSPACE')
     def gav = pomParsing(workspace)
     def restClient = new RESTClient("http://nexus/repository/${repo}/")
-    restClient.auth.basic 'admin', 'admin123'
+    restClient.auth.basic 'nexus-service-user', 'nexus'
     restClient.encoder.'application/zip' = this.&encodingZipFile
     def correct_path = gav[0].replaceAll('\\.','/')
     def artifactId = gav[1]
@@ -47,10 +47,9 @@ void pull() {
     def gav = pomParsing(workspace)
     def correct_path = gav[0].replaceAll('\\.','/')
     def artifactId = gav[1]
-    def version = gav[2].split('-')[0]
     def restClient = new RESTClient("http://nexus/repository/${repo}/")
-    restClient.auth.basic 'admin', 'admin123'
-    def launch = restClient.get(path: "http://nexus/repository/${repo}/${correct_path}/${buildNumber}/${artifactName}.war"
+    restClient.auth.basic 'nexus-service-user', 'nexus'
+    def launch = restClient.get(path: "http://nexus/repository/${repo}/${correct_path}/${artifactId}/${buildNumber}/${artifactId}-${buildNumber}.war"
     )
     new File("./${artifactId}.war") << launch.data
 }

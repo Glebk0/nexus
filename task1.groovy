@@ -7,7 +7,7 @@ import org.apache.http.entity.*
 import hudson.model.*
 
 String[] pomParsing(def workspace) {
-    def pom = new XmlSlurper().parse(new File("/home/student/jenkins/SimpleWebApp/pom.xml"))
+    def pom = new XmlSlurper().parse(new File("pom.xml"))
     def list = []
     list.add(pom.groupId)
     list.add(pom.artifactId)
@@ -27,8 +27,8 @@ void push() {
     def artifactId = gav[1]
     def version = gav[2].split('-')[0]
     def launch = restClient.put(
-            path: "http://nexus/repository/${repo}/${correct_path}/${version}/${buildNumber}/${artifactId}-${buildNumber}.war",
-            body: new File("target/${artifactId}.war"),
+            path: "http://nexus/repository/${repo}/${correct_path}/${artifactId}/1.${buildNumber}/${artifactId}-1.${buildNumber}.war",
+            body: new File("target/${artifactId}-1.${buildNumber}.war"),
             requestContentType: 'application/zip'
     )
 }
@@ -50,7 +50,7 @@ void pull() {
     def version = gav[2].split('-')[0]
     def restClient = new RESTClient("http://nexus/repository/${repo}/")
     restClient.auth.basic 'admin', 'admin123'
-    def launch = restClient.get(path: "http://nexus/repository/${repo}/${correct_path}/${version}/${buildNumber}/${artifactName}.war"
+    def launch = restClient.get(path: "http://nexus/repository/${repo}/${correct_path}/${buildNumber}/${artifactName}.war"
     )
     new File("./${artifactId}.war") << launch.data
 }
